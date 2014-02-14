@@ -1,0 +1,39 @@
+{
+  "name": "docker-spawn",
+  "version": "0.0.1",
+  "description": "Spawn servers in docker containers in a way easy to work with node.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "node_modules/.bin/mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eugeneware/docker-spawn"
+  },
+  "keywords": [
+    "docker",
+    "spawn",
+    "launch",
+    "launcher",
+    "serve",
+    "server",
+    "soa",
+    "mock"
+  ],
+  "author": "Eugene Ware <eugene@noblesamurai.com>",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/eugeneware/docker-spawn/issues"
+  },
+  "dependencies": {
+    "dockerode": "~1.2.7",
+    "through2": "~0.4.1",
+    "JSONStream": "~0.8.0",
+    "mysql": "~2.0.1"
+  },
+  "devDependencies": {
+    "expect.js": "~0.2.0",
+    "mocha": "~1.17.0",
+    "sequelize": "~1.7.0-rc6"
+  }
+}

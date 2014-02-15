@@ -7,10 +7,11 @@ var expect = require('expect.js'),
     spawn = require('..');
 
 describe('docker-spawn', function() {
+  var dockerhost = 'docker';
   it('should be able to spin up a mysql server', function(done) {
     this.timeout(0);
 
-    var docker = new Docker({host: 'http://localdocker', port: 4243});
+    var docker = new Docker({host: 'http://' + dockerhost, port: 4243});
 
     function pull(img, cb) {
       docker.listImages(function (err, images) {
@@ -69,7 +70,7 @@ describe('docker-spawn', function() {
             console.log(exposed);
 
             (function connect() {
-              var client = net.connect({ host: 'localdocker', port: exposed[0]},
+              var client = net.connect({ host: dockerhost, port: exposed[0]},
                 function () {
                   console.log('connected');
                   setImmediate(work);
@@ -82,7 +83,7 @@ describe('docker-spawn', function() {
             function work() {
               sequelize = new Sequelize('mysql', 'root', '', {
                 dialect: 'mysql',
-                   host: '172.18.42.1',
+                   host: dockerhost,
                    port: exposed[0],
                    pool: {
                      handleDisconnects: true

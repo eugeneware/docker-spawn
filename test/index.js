@@ -8,12 +8,11 @@ describe('docker-spawn', function() {
   it('should be able to spin up a mysql server', function(done) {
     this.timeout(0);
 
-    var opts = {
+    spawn(dockerhost, {
       image: 'orchardup/mysql',
       ports: [3306]
-    };
+    }, work);
 
-    spawn(dockerhost, opts, work);
     function work(err, exposed, stop) {
       if (err) return done(err);
       sequelize = new Sequelize('mysql', 'root', '', {
@@ -46,12 +45,11 @@ describe('docker-spawn', function() {
   it('should be able to spin up a postgresql server', function(done) {
     this.timeout(0);
 
-    var opts = {
+    spawn(dockerhost, {
       image: 'orchardup/postgresql',
       ports: [5432]
-    };
+    }, work);
 
-    spawn(dockerhost, opts, work);
     function work(err, exposed, stop) {
       if (err) return done(err);
       sequelize = new Sequelize('docker', 'docker', 'docker', {

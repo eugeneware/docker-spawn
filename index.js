@@ -21,7 +21,6 @@ function spawn(dockerhost, dockerport, opts, cb) {
       acc[port + '/tcp'] = [ { HostPort: '0' } ];
       return acc;
     }, {});;
-
     container.start({PortBindings: ports}, inspect.bind(null, container));
   }
 

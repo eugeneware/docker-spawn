@@ -1,13 +1,27 @@
 var expect = require('expect.js'),
     Sequelize = require('sequelize'),
+    after = require('after'),
     spawn = require('..');
 
 describe('docker-spawn', function() {
   var dockerport = 4243;
   var dockerhost = process.env.DOCKER_HOST || 'docker';
 
-  it('should be able to spin up a mysql server', function(done) {
+  before(function (done) {
     this.timeout(0);
+
+    var images = ['orchardup/mysql', 'orchardup/postgresql'];
+    var next = after(images.length, done);
+    images.forEach(function (image) {
+      spawn.pull(dockerhost, dockerport, image, function (err) {
+        if (err) return done(err);
+        next();
+      });
+    });
+  });
+
+  it('should be able to spin up a mysql server', function(done) {
+    this.timeout(10000);
 
     spawn(dockerhost, dockerport, {
        image: 'orchardup/mysql',
@@ -45,7 +59,7 @@ describe('docker-spawn', function() {
   });
 
   it('should be able to spin up a postgresql server', function(done) {
-    this.timeout(0);
+    this.timeout(10000);
 
     spawn(dockerhost, dockerport, {
        image: 'orchardup/postgresql',

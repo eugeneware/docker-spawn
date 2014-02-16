@@ -5,12 +5,13 @@ var Docker = require('dockerode'),
 
 module.exports = spawn;
 function spawn(dockerhost, dockerport, opts, cb) {
-  var docker = new Docker({host: 'http://' + dockerhost, port: dockerport});
+  var docker;
 
-  pull(docker, opts.image, create);
+  pull(dockerhost, dockerport, opts.image, create);
 
-  function create(err) {
+  function create(err, _docker) {
     if (err) return cb(err);
+    docker = _docker;
     docker.createContainer({Image: opts.image}, start);
   }
 
@@ -64,7 +65,10 @@ function spawn(dockerhost, dockerport, opts, cb) {
   }
 }
 
-function pull(docker, img, cb) {
+module.exports.pull = pull;
+function pull(dockerhost, dockerport, img, cb) {
+  var docker = new Docker({host: 'http://' + dockerhost, port: dockerport});
+
   docker.listImages(function (err, images) {
     if (err) return cb(err);
     var image = images.filter(function (image) {
@@ -83,10 +87,14 @@ function pull(docker, img, cb) {
           next();
         })).pipe(process.stdout);
         stream.once('error', cb);
-        stream.once('end', cb);
+        stream.once('end', finish);
       });
     } else {
-      cb();
+      finish();
     }
   });
+
+  function finish() {
+    cb(null, docker);
+  }
 }

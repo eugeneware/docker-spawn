@@ -5,6 +5,12 @@ var Docker = require('dockerode'),
 
 module.exports = spawn;
 function spawn(dockerhost, dockerport, opts, cb) {
+  if (typeof cb === 'undefined') {
+    opts = dockerport;
+    cb = opts;
+    dockerport = 4243;
+  }
+
   var docker;
 
   pull(dockerhost, dockerport, opts.image, create);
@@ -66,6 +72,12 @@ function spawn(dockerhost, dockerport, opts, cb) {
 
 module.exports.pull = pull;
 function pull(dockerhost, dockerport, img, cb) {
+  if (typeof cb === 'undefined') {
+    img = dockerport;
+    cb = img;
+    dockerport = 4243;
+  }
+
   var docker = new Docker({host: 'http://' + dockerhost, port: dockerport});
 
   docker.listImages(function (err, images) {

@@ -1,7 +1,7 @@
 {
   "name": "docker-spawn",
   "version": "0.0.1",
-  "description": "Spawn servers in docker containers in a way easy to work with node.js",
+  "description": "Makes spawning docker servers as easy as require() in node.js.",
   "main": "index.js",
   "scripts": {
     "test": "node_modules/.bin/mocha"

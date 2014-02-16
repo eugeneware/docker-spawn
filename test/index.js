@@ -18,20 +18,21 @@ describe('docker-spawn', function() {
       if (err) return done(err);
       sequelize = new Sequelize('mysql', 'root', '', {
         dialect: 'mysql',
-           host: dockerhost,
-           port: exposed[0],
-           pool: {
-             handleDisconnects: true
-           }
+          host: dockerhost,
+          port: exposed[0],
+          pool: {
+            handleDisconnects: true
+          },
+          logging: false
       });
       sequelize
         .authenticate()
         .done(function(err) {
           if (err) {
-            console.log('Unable to connect to the database:', err)
-            stop(done);
+            stop(function () {
+              return done(err);
+            });
           } else {
-            console.log('Connection has been established successfully.')
             sequelize.query('select * from user').done(function (err, data) {
               if (err) throw err;
               expect(data.length).to.equal(8);
@@ -55,20 +56,21 @@ describe('docker-spawn', function() {
       if (err) return done(err);
       sequelize = new Sequelize('docker', 'docker', 'docker', {
         dialect: 'postgres',
-           host: dockerhost,
-           port: exposed[0],
-           pool: {
-             handleDisconnects: true
-           }
+          host: dockerhost,
+          port: exposed[0],
+          pool: {
+            handleDisconnects: true
+          },
+          logging: false
       });
       sequelize
         .authenticate()
         .done(function(err) {
           if (err) {
-            console.log('Unable to connect to the database:', err)
-            stop(done);
+            stop(function () {
+              return done(err);
+            });
           } else {
-            console.log('Connection has been established successfully.')
             sequelize.query('select * from pg_catalog.pg_user').done(function (err, data) {
               if (err) throw err;
               expect(data).to.eql(

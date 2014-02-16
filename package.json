@@ -28,12 +28,13 @@
   "dependencies": {
     "dockerode": "~1.2.7",
     "through2": "~0.4.1",
-    "JSONStream": "~0.8.0",
-    "mysql": "~2.0.1"
+    "JSONStream": "~0.8.0"
   },
   "devDependencies": {
     "expect.js": "~0.2.0",
     "mocha": "~1.17.0",
-    "sequelize": "~1.7.0-rc6"
+    "sequelize": "~1.7.0-rc6",
+    "mysql": "~2.0.1",
+    "pg": "~2.11.1"
   }
 }

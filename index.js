@@ -15,20 +15,19 @@ function spawn(dockerhost, opts, cb) {
         acc[port + '/tcp'] = [ { HostPort: '0' } ];
         return acc;
       }, {});;
+
       container.start({PortBindings: ports}, function(err, data) {
         if (err) throw err;
-        console.log('started', container.id);
+
         container.inspect(function (err, data) {
           if (err) throw err;
           var exposed = opts.ports.map(function (port) {
             return parseInt(data.NetworkSettings.Ports[port + '/tcp'][0].HostPort, 10);
           });
-          console.log(exposed);
 
           (function connect() {
             var client = net.connect({ host: dockerhost, port: exposed[0]},
               function () {
-                console.log('connected');
                 setImmediate(work);
               })
               .on('error', function () {

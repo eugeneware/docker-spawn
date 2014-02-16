@@ -1,6 +1,6 @@
 {
   "name": "docker-spawn",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Makes spawning docker servers as easy as require() in node.js.",
   "main": "index.js",
   "scripts": {

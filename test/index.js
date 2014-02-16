@@ -3,12 +3,13 @@ var expect = require('expect.js'),
     spawn = require('..');
 
 describe('docker-spawn', function() {
+  var dockerport = 4243;
   var dockerhost = process.env.DOCKER_HOST || 'docker';
 
   it('should be able to spin up a mysql server', function(done) {
     this.timeout(0);
 
-    spawn(dockerhost, {
+    spawn(dockerhost, dockerport, {
        image: 'orchardup/mysql',
        ports: [3306],
       remove: true
@@ -46,7 +47,7 @@ describe('docker-spawn', function() {
   it('should be able to spin up a postgresql server', function(done) {
     this.timeout(0);
 
-    spawn(dockerhost, {
+    spawn(dockerhost, dockerport, {
        image: 'orchardup/postgresql',
        ports: [5432],
       remove: true

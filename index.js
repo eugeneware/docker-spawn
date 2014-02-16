@@ -4,8 +4,8 @@ var Docker = require('dockerode'),
     net = require('net');
 
 module.exports = spawn;
-function spawn(dockerhost, opts, cb) {
-  var docker = new Docker({host: 'http://' + dockerhost, port: 4243});
+function spawn(dockerhost, dockerport, opts, cb) {
+  var docker = new Docker({host: 'http://' + dockerhost, port: dockerport});
 
   pull(docker, opts.image, create);
 

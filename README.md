@@ -83,7 +83,7 @@ makes it available to node.
     `exposedPorts` argument in the callback.
     * `remove` - if set to `true`, then the server image will be removed when
     closed (Useful for temporary image creation - eg. unit tests, CI, etc)
-* `cb(err, exposedPorts, stop) - This callback get called after the spawn
+* `cb(err, exposedPorts, stop)` - This callback get called after the spawn
   completes. The arguments are:
     * `err` - any error that was experienced.
     * `exposedPorts` - an array of the dynamically mapped ports. These are the

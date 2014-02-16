@@ -9,8 +9,9 @@ describe('docker-spawn', function() {
     this.timeout(0);
 
     spawn(dockerhost, {
-      image: 'orchardup/mysql',
-      ports: [3306]
+       image: 'orchardup/mysql',
+       ports: [3306],
+      remove: true
     }, work);
 
     function work(err, exposed, stop) {
@@ -46,8 +47,9 @@ describe('docker-spawn', function() {
     this.timeout(0);
 
     spawn(dockerhost, {
-      image: 'orchardup/postgresql',
-      ports: [5432]
+       image: 'orchardup/postgresql',
+       ports: [5432],
+      remove: true
     }, work);
 
     function work(err, exposed, stop) {

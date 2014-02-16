@@ -7,50 +7,61 @@ module.exports = spawn;
 function spawn(dockerhost, opts, cb) {
   var docker = new Docker({host: 'http://' + dockerhost, port: 4243});
 
-  pull(docker, opts.image, function (err) {
-    if (err) throw err;
-    docker.createContainer({Image: opts.image}, function(err, container) {
-      if (err) throw err;
-      var ports = opts.ports.reduce(function (acc, port) {
-        acc[port + '/tcp'] = [ { HostPort: '0' } ];
-        return acc;
-      }, {});;
+  pull(docker, opts.image, create);
 
-      container.start({PortBindings: ports}, function(err, data) {
-        if (err) throw err;
+  function create(err) {
+    if (err) return cb(err);
+    docker.createContainer({Image: opts.image}, start);
+  }
 
-        container.inspect(function (err, data) {
-          if (err) throw err;
-          var exposed = opts.ports.map(function (port) {
-            return parseInt(data.NetworkSettings.Ports[port + '/tcp'][0].HostPort, 10);
-          });
+  function start(err, container) {
+    if (err) return cb(err);;
+    var ports = opts.ports.reduce(function (acc, port) {
+      acc[port + '/tcp'] = [ { HostPort: '0' } ];
+      return acc;
+    }, {});;
 
-          (function connect() {
-            var client = net.connect({ host: dockerhost, port: exposed[0]},
-              function () {
-                setImmediate(work);
-              })
-              .on('error', function () {
-                setTimeout(connect, 100);
-              });
-          })();
+    container.start({PortBindings: ports}, inspect.bind(null, container));
+  }
 
-          function work() {
-            cb(null, exposed, stop);
-          }
+  function inspect(container, err, data) {
+    if (err) return cb(err);
+    container.inspect(doWork.bind(null, container));
+  }
 
-          function stop(cb) {
-            container.stop(function (err, data) {
-              if (err) return cb(err);
-              container.remove(function () {
-                cb();
-              });
-            });
-          }
-        });
-      });
+  function doWork(container, err, data) {
+    if (err) return cb(err);
+    var exposed = opts.ports.map(function (port) {
+      return parseInt(data.NetworkSettings.Ports[port + '/tcp'][0].HostPort, 10);
     });
-  });
+
+    // poll until there is something listening on the exposed ports
+    (function connect() {
+      var client = net.connect({ host: dockerhost, port: exposed[0]},
+        function () {
+          setImmediate(work);
+        })
+        .on('error', function () {
+          // check every 100 ms
+          setTimeout(connect, 100);
+        });
+    })();
+
+    function work() {
+      cb(null, exposed, stop);
+    }
+
+    function stop(cb) {
+      container.stop(function (err, data) {
+        if (err) return cb(err);
+        if (opts.remove) {
+          container.remove(cb);
+        } else {
+          cb();
+        }
+      });
+    }
+  }
 }
 
 function pull(docker, img, cb) {
